@@ -1,0 +1,73 @@
+{
+  "Stack": {
+    "Beginner": {
+      "concept": "Stack follows LIFO (Last In First Out).",
+      "visual": "Push adds element to top. Pop removes from top.",
+      "java": "Basic Stack example using java.util.Stack."
+    },
+    "Intermediate": {
+      "concept": "Stack can be implemented using Arrays or Linked Lists.",
+      "visual": "Array stack uses index pointer. Linked list stack uses head pointer.",
+      "java": "Array-based stack implementation with top pointer."
+    },
+    "Advanced": {
+      "concept": "Advanced stack usage: DFS, Expression evaluation, Monotonic stack.",
+      "visual": "Used in recursion call stack and algorithm design.",
+      "java": "Stack implementation using custom Linked List."
+    }
+  },
+
+  "Queue": {
+    "Beginner": {
+      "concept": "Queue follows FIFO (First In First Out).",
+      "visual": "Enqueue at rear. Dequeue from front.",
+      "java": "Queue example using LinkedList."
+    },
+    "Intermediate": {
+      "concept": "Queue types: Circular Queue, Priority Queue.",
+      "visual": "Circular queue connects last index to first.",
+      "java": "Circular queue implementation."
+    },
+    "Advanced": {
+      "concept": "Advanced uses: BFS, Scheduling algorithms.",
+      "visual": "Queue used in Graph traversal (BFS).",
+      "java": "Queue used in BFS traversal program."
+    }
+  },
+
+  "Linear Search": {
+    "Beginner": {
+      "concept": "Linear search checks elements one by one.",
+      "visual": "Start from index 0 until match found.",
+      "java": "Basic linear search loop."
+    },
+    "Intermediate": {
+      "concept": "Time complexity: O(n). Best case O(1).",
+      "visual": "Worst case when element is last.",
+      "java": "Optimized linear search example."
+    },
+    "Advanced": {
+      "concept": "Works well for unsorted arrays.",
+      "visual": "Comparison-based searching.",
+      "java": "Generic search method implementation."
+    }
+  },
+
+  "Bubble Sort": {
+    "Beginner": {
+      "concept": "Bubble sort swaps adjacent elements.",
+      "visual": "Largest element bubbles to end each pass.",
+      "java": "Basic bubble sort nested loop."
+    },
+    "Intermediate": {
+      "concept": "Time complexity: O(n^2).",
+      "visual": "After each pass, one element sorted.",
+      "java": "Optimized bubble sort with flag."
+    },
+    "Advanced": {
+      "concept": "Not suitable for large datasets.",
+      "visual": "Comparison-based sorting.",
+      "java": "Improved bubble sort logic."
+    }
+  }
+}
