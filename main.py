@@ -10,14 +10,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from pymongo import MongoClient
-import os
 
-MONGO_URI = os.environ.get("MONGO_URI")
-
-client = MongoClient(MONGO_URI)
-db = client["dsa_database"]
-collection = db["modules"]
 # ==============================
 # DSA CONTENT DATABASE
 # ==============================
@@ -1783,6 +1776,8 @@ def health():
     return {"status": "ok", "message": "DSA Learning API is running"}
 import os
 import uvicorn
+client = None
+db = None
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
