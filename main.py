@@ -10,7 +10,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+from pymongo import MongoClient
+import os
 
+MONGO_URI = os.environ.get("MONGO_URI")
+
+client = MongoClient(MONGO_URI)
+db = client["dsa_database"]
+collection = db["modules"]
 # ==============================
 # DSA CONTENT DATABASE
 # ==============================
