@@ -1,6 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pymongo import MongoClient
+import os
 
+mongo_uri = os.getenv("MONGO_URI")
+client = MongoClient(mongo_uri)
+db = client["?????"]
 app = FastAPI()
 
 app.add_middleware(
