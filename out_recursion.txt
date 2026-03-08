@@ -1,0 +1,267 @@
+"Recursion": {
+        "Beginner": {
+            "definition": (
+                "Recursion is a programming technique where a function calls itself, directly or indirectly, "
+                "to solve a problem by breaking it down into smaller, similar sub-problems. Every recursive "
+                "function must have a 'Base Case' to stop the execution and 'Recursive Steps' that lead "
+                "towards that base case. It is fundamentally linked to the Stack data structure, as each call "
+                "creates a new frame on the system's call stack."
+            ),
+            "working": (
+                "1. BASE CASE: The condition that ends the recursion (stops the loop).\n"
+                "2. RECURSIVE CALL: The function calling itself with a modified (usually smaller) input.\n"
+                "3. CALL STACK: Each call is pushed onto the stack. When the base case hits, calls begin 'unwinding' and returning values.\n"
+                "4. STACK OVERFLOW: Occurs if the recursion is too deep or missing a base case."
+            ),
+            "algorithm": (
+                "FACTORIAL(n):\n"
+                "  if n == 0 return 1\n"
+                "  return n * FACTORIAL(n-1)\n\n"
+                "FIBONACCI(n):\n"
+                "  if n <= 1 return n\n"
+                "  return FIBONACCI(n-1) + FIBONACCI(n-2)"
+            ),
+            "time_complexity": {
+                "Factorial": "O(n)",
+                "Fibonacci (naive)": "O(2^n) — exponential",
+                "Binary Search (rec)": "O(log n)",
+                "Tree Traversal": "O(n)",
+                "DFS": "O(V + E)"
+            },
+            "space_complexity": "O(d) — where d is the maximum depth of the recursion (stack space).",
+            "applications": (
+                "• Mathematical computations (Factorials, Powers, Fibonacci)\n"
+                "• Tree and Graph traversals (DFS, Preorder, Inorder)\n"
+                "• Divide and Conquer algorithms (MergeSort, QuickSort)\n"
+                "• Solving puzzles (Tower of Hanoi)\n"
+                "• Dynamic Programming (Top-down approach with memoization)"
+            ),
+            "advantages": (
+                "• Leads to clean, elegant, and readable code for complex problems\n"
+                "• Naturally models hierarchical data (trees) and patterns\n"
+                "• Easier to implement than iterative versions for some algorithms (like DFS)"
+            ),
+            "disadvantages": (
+                "• Risk of StackOverflow if recursion depth is too high\n"
+                "• Often carries more overhead (memory/time) than iterative loops\n"
+                "• Can be hard to debug and visualize for beginners"
+            ),
+            "interview_notes": (
+                "★ Always identify the Base Case first.\n"
+                "★ Understand the difference between recursion and iteration.\n"
+                "★ Mention Memoization to optimize exponential recursive problems like Fibonacci.\n"
+                "★ Tail Recursion: explain how some compilers optimize calls to reuse stack frames."
+            ),
+            "java": """\
+public class BeginnerRecursion {
+    // 1. Basic Recursion: Factorial
+    public static int factorial(int n) {
+        if (n <= 1) return 1; // Base case
+        return n * factorial(n - 1); // Recursive step
+    }
+
+    // 2. Classic Recursion: Fibonacci Sequence
+    public static int fibonacci(int n) {
+        if (n <= 1) return n;
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Basic Recursion (Factorial 5): " + factorial(5));
+        System.out.println("Fibonacci (7th term): " + fibonacci(7));
+    }
+}"""
+        },
+
+        "Intermediate": {
+            "definition": (
+                "At the intermediate level, recursion is applied to divide-and-conquer problems and to "
+                "understand the mechanics of Merge Sort, Quick Sort, and Binary Search through recursive "
+                "decomposition. Recursion trees help visualize the call depth and total work done. We also "
+                "study Tail Recursion — a special form where the recursive call is the last action in the "
+                "function, enabling compiler optimization that reuses the current stack frame instead of "
+                "creating a new one, reducing space complexity from O(n) to O(1)."
+            ),
+            "working": (
+                "RECURSION TREE ANALYSIS:\n"
+                "  Each call spawns sub-calls; the tree's height = recursion depth.\n"
+                "  Total work = sum of work at each level.\n"
+                "  For Merge Sort: T(n) = 2T(n/2) + O(n) → O(n log n) by Master Theorem.\n\n"
+                "TAIL CALL OPTIMIZATION:\n"
+                "  Regular: factorial(5) → 5 * factorial(4) → keeps frame alive waiting for return.\n"
+                "  Tail: accumulaor-based factorial(5, 1) → factorial(4, 5) → frame reused.\n\n"
+                "MUTUAL RECURSION:\n"
+                "  isEven(n) calls isOdd(n-1) and vice versa — two functions calling each other."
+            ),
+            "algorithm": (
+                "TAIL RECURSIVE FACTORIAL:\n"
+                "  factorial(n, acc=1):\n"
+                "    if n == 0: return acc\n"
+                "    return factorial(n-1, n * acc)  // no operations after call\n\n"
+                "MASTER THEOREM (simplified):\n"
+                "  T(n) = aT(n/b) + f(n)\n"
+                "  Case 1: f(n) = O(n^log_b(a) - ε) → T(n) = O(n^log_b(a))\n"
+                "  Case 2: f(n) = O(n^log_b(a)) → T(n) = O(n^log_b(a) * log n)\n"
+                "  Case 3: f(n) = Ω(n^log_b(a) + ε) → T(n) = O(f(n))"
+            ),
+            "time_complexity": {
+                "Tail Recursive Factorial": "O(n) time, O(1) stack space",
+                "Merge Sort Recurrence": "T(n) = 2T(n/2) + n → O(n log n)",
+                "Binary Search Recurrence": "T(n) = T(n/2) + 1 → O(log n)",
+                "Fibonacci (naive)": "T(n) = T(n-1) + T(n-2) → O(2^n)",
+                "Fibonacci (memoized)": "O(n) — each subproblem solved once"
+            },
+            "space_complexity": "O(1) for tail-recursive with TCO; O(n) for standard recursion stack.",
+            "applications": (
+                "• Sorting algorithms (Merge Sort, Quick Sort)\n"
+                "• Binary Search trees (insert, delete, search)\n"
+                "• Power computation x^n using fast exponentiation\n"
+                "• GCD using Euclidean algorithm\n"
+                "• Tower of Hanoi"
+            ),
+            "advantages": (
+                "• Tail call optimization eliminates stack overflow risk\n"
+                "• Master theorem provides instant complexity analysis\n"
+                "• Clean expression of divide-and-conquer"
+            ),
+            "disadvantages": (
+                "• Java does not automatically apply TCO (unlike Scala/Haskell)\n"
+                "• Mutual recursion can be confusing to trace\n"
+                "• Function call overhead remains even with TCO in some runtimes"
+            ),
+            "interview_notes": (
+                "★ Power Function (LeetCode 50) — fast exponentiation using recursion in O(log n).\n"
+                "★ Be ready to apply Master Theorem to analyze T(n) = 2T(n/2) + n.\n"
+                "★ Tail recursion is a talking point for functional language interviews.\n"
+                "★ Flatten Nested List Iterator — elegant recursive solution."
+            ),
+            "java": """\
+public class IntermediateRecursion {
+    // 1. Palindrome Check using Recursion
+    public static boolean isPalindrome(String str, int left, int right) {
+        if (left >= right) return true;
+        if (str.charAt(left) != str.charAt(right)) return false;
+        return isPalindrome(str, left + 1, right - 1);
+    }
+
+    // 2. Reverse a String using Recursion
+    public static String reverseString(String str) {
+        if (str.isEmpty()) return str;
+        return reverseString(str.substring(1)) + str.charAt(0);
+    }
+
+    public static void main(String[] args) {
+        String testStr = "racecar";
+        System.out.println("Is '" + testStr + "' a Palindrome? " + isPalindrome(testStr, 0, testStr.length() - 1));
+        
+        String word = "hello";
+        System.out.println("Reversed '" + word + "': " + reverseString(word));
+    }
+}"""
+        },
+
+        "Advanced": {
+            "definition": (
+                "At the advanced level, recursion is the backbone of complex combinatorial enumeration, "
+                "tree DP, and graph DFS. We explore how the call stack maps directly to DFS traversal, how "
+                "memoized recursion bridges to bottom-up DP, and how the 'return type trick' accumulates "
+                "state during tree traversals. We also study stack-overflow-safe recursion using trampolining "
+                "or explicit stack simulation — converting recursive algorithms to iterative ones to handle "
+                "extremely deep inputs."
+            ),
+            "working": (
+                "TRAMPOLINING:\n"
+                "  Replace recursive call with a thunk (lazy function).\n"
+                "  Driver loop calls thunks until a non-thunk value is returned.\n"
+                "  Avoids growing the call stack — used for very deep recursions.\n\n"
+                "TREE DP WITH RETURN TRICKS:\n"
+                "  Each recursive call returns a pair (height, isDiameterUpdated).\n"
+                "  Diameter of tree = max(leftHeight + rightHeight) seen across all nodes.\n\n"
+                "CONVERTING RECURSION TO ITERATIVE DFS:\n"
+                "  Push (node, state) pairs onto an explicit stack.\n"
+                "  Pop and process until stack is empty."
+            ),
+            "algorithm": (
+                "DIAMETER OF BINARY TREE — O(n):\n"
+                "  height(node):\n"
+                "    if null: return 0\n"
+                "    left = height(node.left)\n"
+                "    right = height(node.right)\n"
+                "    diameter = max(diameter, left + right)  // update global\n"
+                "    return 1 + max(left, right)\n\n"
+                "FLATTEN BST TO LINKED LIST — in-place:\n"
+                "  Use Morris Inorder Traversal (no extra space)\n"
+                "  Temporarily modify tree to follow threads"
+            ),
+            "time_complexity": {
+                "Tree Diameter (recursion)": "O(n)",
+                "LCA of Binary Tree": "O(n)",
+                "Serialize / Deserialize Tree": "O(n)",
+                "Flatten Binary Tree": "O(n)",
+                "All Paths Root to Leaf": "O(n * h)"
+            },
+            "space_complexity": "O(h) for recursive tree algorithms where h = height. O(1) for Morris traversal.",
+            "applications": (
+                "• Tree DP (diameter, views, path sums)\n"
+                "• Parsing nested expressions (compilers)\n"
+                "• Divide-and-conquer algorithms (Karatsuba multiplication)\n"
+                "• Recursive descent parsers\n"
+                "• DFS-based graph cycle detection"
+            ),
+            "advantages": (
+                "• Most tree problems become elegant with recursion\n"
+                "• Recursion maps naturally to inductive proofs\n"
+                "• Memoized recursion gives correct DP without manual table construction"
+            ),
+            "disadvantages": (
+                "• Stack depth limits recursion to ~10,000 levels in Java by default\n"
+                "• Converting to iterative requires manual state management\n"
+                "• Hard to debug recursive bugs in very deep call stacks"
+            ),
+            "interview_notes": (
+                "★ Diameter of Binary Tree (LeetCode 543) — return height, track diameter globally.\n"
+                "★ Binary Tree Maximum Path Sum (LeetCode 124) — Hard, uses the same return trick.\n"
+                "★ Flatten Binary Tree to Linked List (LeetCode 114) — in-place with O(1) space.\n"
+                "★ Be ready to convert any recursive DFS to iterative using an explicit stack."
+            ),
+            "java": """\
+public class AdvancedRecursion {
+    // 1. Optimized Fibonacci with Memoization (Real-time efficiency)
+    static long[] memo = new long[100];
+    public static long fibMemo(int n) {
+        if (n <= 1) return n;
+        if (memo[n] != 0) return memo[n];
+        return memo[n] = fibMemo(n - 1) + fibMemo(n - 2);
+    }
+
+    // 2. Palindromic Partitions (Advanced Backtracking + Recursion)
+    public static void printPalindromes(String str, String current) {
+        if (str.isEmpty()) {
+            System.out.println(current.trim());
+            return;
+        }
+        for (int i = 1; i <= str.length(); i++) {
+            String prefix = str.substring(0, i);
+            if (isPal(prefix)) {
+                printPalindromes(str.substring(i), current + "(" + prefix + ") ");
+            }
+        }
+    }
+    
+    private static boolean isPal(String s) {
+        int l = 0, r = s.length() - 1;
+        while (l < r) if (s.charAt(l++) != s.charAt(r--)) return false;
+        return true;
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Optimized Fib(50) (Real-time): " + fibMemo(50));
+        System.out.println("Palindromic Partitions of 'aab':");
+        printPalindromes("aab", "");
+    }
+}"""
+        }
+    },
+
+    # ==================== BACKTRACKING ====================
+    

@@ -2594,24 +2594,22 @@ public class AdvancedBubbleSort {
                 "★ Tail Recursion: explain how some compilers optimize calls to reuse stack frames."
             ),
             "java": """\
-public class RecursionDemo {
-    // 1. Basic Factorial
+public class BeginnerRecursion {
+    // 1. Basic Recursion: Factorial
     public static int factorial(int n) {
-        if (n <= 1) return 1; // Base Case
-        return n * factorial(n - 1); // Recursive Step
+        if (n <= 1) return 1; // Base case
+        return n * factorial(n - 1); // Recursive step
     }
 
-    // 2. Fibonacci with Memoization
-    static long[] memo = new long[100];
-    public static long fib(int n) {
+    // 2. Classic Recursion: Fibonacci Sequence
+    public static int fibonacci(int n) {
         if (n <= 1) return n;
-        if (memo[n] != 0) return memo[n];
-        return memo[n] = fib(n-1) + fib(n-2);
+        return fibonacci(n - 1) + fibonacci(n - 2);
     }
 
     public static void main(String[] args) {
-        System.out.println("Fact(5): " + factorial(5)); // 120
-        System.out.println("Fib(10): " + fib(10));     // 55
+        System.out.println("Basic Recursion (Factorial 5): " + factorial(5));
+        System.out.println("Fibonacci (7th term): " + fibonacci(7));
     }
 }"""
         },
@@ -2680,41 +2678,25 @@ public class RecursionDemo {
             ),
             "java": """\
 public class IntermediateRecursion {
-
-    // 1. Tail-Recursive Factorial
-    static long factorial(int n, long acc) {
-        if (n <= 1) return acc;
-        return factorial(n - 1, n * acc); // Tail call — nothing after return
+    // 1. Palindrome Check using Recursion
+    public static boolean isPalindrome(String str, int left, int right) {
+        if (left >= right) return true;
+        if (str.charAt(left) != str.charAt(right)) return false;
+        return isPalindrome(str, left + 1, right - 1);
     }
 
-    // 2. Fast Exponentiation: x^n in O(log n)
-    static double myPow(double x, int n) {
-        if (n == 0) return 1;
-        double half = myPow(x, n / 2);
-        if (n % 2 == 0) return half * half;
-        else return half * half * x;
-    }
-
-    // 3. GCD - Euclidean Algorithm
-    static int gcd(int a, int b) {
-        if (b == 0) return a;
-        return gcd(b, a % b); // Tail recursive
-    }
-
-    // 4. Tower of Hanoi
-    static void hanoi(int n, char from, char to, char aux) {
-        if (n == 0) return;
-        hanoi(n - 1, from, aux, to);
-        System.out.println("Move disk " + n + " from " + from + " to " + to);
-        hanoi(n - 1, aux, to, from);
+    // 2. Reverse a String using Recursion
+    public static String reverseString(String str) {
+        if (str.isEmpty()) return str;
+        return reverseString(str.substring(1)) + str.charAt(0);
     }
 
     public static void main(String[] args) {
-        System.out.println("Factorial(10): " + factorial(10, 1));  // 3628800
-        System.out.println("2^10: " + (int) myPow(2, 10));          // 1024
-        System.out.println("GCD(48, 18): " + gcd(48, 18));          // 6
-        System.out.println("Hanoi(3 disks):");
-        hanoi(3, 'A', 'C', 'B');
+        String testStr = "racecar";
+        System.out.println("Is '" + testStr + "' a Palindrome? " + isPalindrome(testStr, 0, testStr.length() - 1));
+        
+        String word = "hello";
+        System.out.println("Reversed '" + word + "': " + reverseString(word));
     }
 }"""
         },
@@ -2785,40 +2767,38 @@ public class IntermediateRecursion {
             ),
             "java": """\
 public class AdvancedRecursion {
-    static class TreeNode { int val; TreeNode left, right; TreeNode(int v){val=v;} }
-    static int diameter = 0;
-
-    // Tree Diameter — O(n)
-    static int height(TreeNode root) {
-        if (root == null) return 0;
-        int left = height(root.left);
-        int right = height(root.right);
-        diameter = Math.max(diameter, left + right);
-        return 1 + Math.max(left, right);
+    // 1. Optimized Fibonacci with Memoization (Real-time efficiency)
+    static long[] memo = new long[100];
+    public static long fibMemo(int n) {
+        if (n <= 1) return n;
+        if (memo[n] != 0) return memo[n];
+        return memo[n] = fibMemo(n - 1) + fibMemo(n - 2);
     }
 
-    // All Root-to-Leaf Paths
-    static void allPaths(TreeNode root, String path) {
-        if (root == null) return;
-        path += root.val;
-        if (root.left == null && root.right == null) {
-            System.out.println(path);
+    // 2. Palindromic Partitions (Advanced Backtracking + Recursion)
+    public static void printPalindromes(String str, String current) {
+        if (str.isEmpty()) {
+            System.out.println(current.trim());
             return;
         }
-        allPaths(root.left, path + "->");
-        allPaths(root.right, path + "->");
+        for (int i = 1; i <= str.length(); i++) {
+            String prefix = str.substring(0, i);
+            if (isPal(prefix)) {
+                printPalindromes(str.substring(i), current + "(" + prefix + ") ");
+            }
+        }
+    }
+    
+    private static boolean isPal(String s) {
+        int l = 0, r = s.length() - 1;
+        while (l < r) if (s.charAt(l++) != s.charAt(r--)) return false;
+        return true;
     }
 
     public static void main(String[] args) {
-        TreeNode root = new TreeNode(1);
-        root.left = new TreeNode(2); root.right = new TreeNode(3);
-        root.left.left = new TreeNode(4); root.left.right = new TreeNode(5);
-
-        height(root);
-        System.out.println("Diameter: " + diameter); // 3
-
-        allPaths(root, "");
-        // 1->2->4 and 1->2->5 and 1->3
+        System.out.println("Optimized Fib(50) (Real-time): " + fibMemo(50));
+        System.out.println("Palindromic Partitions of 'aab':");
+        printPalindromes("aab", "");
     }
 }"""
         }
