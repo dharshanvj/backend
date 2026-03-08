@@ -1,7 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
+from typing import List, Dict, Any, Optional
+from pydantic import BaseModel
 import os
+import visualizer_engine as ve
 
 mongo_uri = os.getenv("MONGO_URI")
 client = MongoClient(mongo_uri)
@@ -8105,6 +8108,39 @@ def list_modules():
 @app.get("/health")
 def health():
     return {"status": "ok", "message": "DSA Learning API is running"}
+
+# --- VISUALIZATION API ---
+class VisualizeRequest(BaseModel):
+    algorithm: str
+    input: Any
+
+@app.post("/visualize")
+def visualize(req: VisualizeRequest):
+    alg = req.algorithm
+    data = req.input
+    
+    if alg == "bubble_sort":
+        return {"steps": ve.simulate_bubble_sort(data)}
+    elif alg == "insertion_sort":
+        return {"steps": ve.simulate_insertion_sort(data)}
+    elif alg == "binary_search":
+        # expects {"arr": [...], "target": x}
+        return {"steps": ve.simulate_binary_search(data["arr"], data["target"])}
+    elif alg == "factorial":
+        return {"steps": ve.simulate_factorial(int(data))}
+    elif alg == "stack":
+        # expects list of ops [{"action": "push", "value": 10}, ...]
+        return {"steps": ve.simulate_stack(data)}
+    elif alg == "queue":
+        return {"steps": ve.simulate_queue(data)}
+    elif alg == "dfs":
+        # expects {"adj": {"0": [1,2]}, "start": "0"}
+        return {"steps": ve.simulate_dfs(data["adj"], data["start"])}
+    elif alg == "bfs":
+        return {"steps": ve.simulate_bfs(data["adj"], data["start"])}
+    
+    return {"error": f"Algorithm '{alg}' simulator not found"}
+
 import os
 import uvicorn
 client = None
