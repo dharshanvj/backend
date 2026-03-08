@@ -8113,33 +8113,103 @@ def health():
 class VisualizeRequest(BaseModel):
     algorithm: str
     input: Any
+    code: Optional[str] = None
+
+import re
+
+def parse_code_for_visualizer(algorithm: str, code: str, default_input: Any):
+    """Attempt to extract logic/data from user code for the simulator."""
+    if not code or not code.strip():
+        return default_input
+        
+    code_clean = re.sub(r'//.*', '', code) # Remove comments
+    code_clean = re.sub(r'/\*.*?\*/', '', code_clean, flags=re.DOTALL)
+
+    if algorithm == "stack":
+        ops = []
+        # Support push(10), stack.push(20), s.add(30)
+        matches = re.finditer(r"\b(push|pop|add|remove|peek)\s*\(\s*([^()]*?)\s*\)", code_clean, re.IGNORECASE)
+        for m in matches:
+            action = m.group(1).lower()
+            val = m.group(2).strip()
+            if action in ["push", "add"]:
+                if not val: val = "X"
+                ops.append({"action": "push", "value": val})
+            elif action in ["pop", "remove"]:
+                ops.append({"action": "pop", "value": None})
+        return ops if len(ops) > 0 else default_input
+
+    if algorithm == "queue":
+        ops = []
+        matches = re.finditer(r"\b(enqueue|dequeue|add|remove|offer|poll)\s*\(\s*([^()]*?)\s*\)", code_clean, re.IGNORECASE)
+        for m in matches:
+            action = m.group(1).lower()
+            val = m.group(2).strip()
+            if action in ["enqueue", "add", "offer"]:
+                if not val: val = "X"
+                ops.append({"action": "enqueue", "value": val})
+            elif action in ["dequeue", "remove", "poll"]:
+                ops.append({"action": "dequeue", "value": None})
+        return ops if len(ops) > 0 else default_input
+
+    if algorithm in ["bubble_sort", "insertion_sort", "binary_search"]:
+        # Match arrays/lists: [1, 2, 3] or {1, 2, 3} with many items to avoid empty [] function sigs
+        m = re.search(r"([\[\{])\s*(-?\d+[\d\s,]*)[\]\}]", code_clean)
+        if m:
+            nums = [int(n.strip()) for n in re.split(r'[\s,]+', m.group(2)) if n.strip().lstrip('-').isdigit()]
+            if len(nums) >= 2: # At least 2 elements to count as data
+                if algorithm == "binary_search":
+                    # Fallback to search for 'target = X' or similar
+                    target = nums[-1] # Default to last
+                    target_m = re.search(r"(target|find|search|val)\s*[:=]\s*(-?\d+)", code_clean, re.I)
+                    if target_m: target = int(target_m.group(2))
+                    return {"arr": sorted(nums), "target": target}
+                return nums
+        return default_input
+
+    if algorithm == "factorial":
+        m = re.search(r"\b(fact|factorial)\s*\(\s*(\d+)\s*\)", code_clean, re.I)
+        if m: return int(m.group(2))
+        return default_input
+
+    return default_input
 
 @app.post("/visualize")
 def visualize(req: VisualizeRequest):
     alg = req.algorithm
-    data = req.input
+    data = parse_code_for_visualizer(alg, req.code, req.input)
     
-    if alg == "bubble_sort":
-        return {"steps": ve.simulate_bubble_sort(data)}
-    elif alg == "insertion_sort":
-        return {"steps": ve.simulate_insertion_sort(data)}
-    elif alg == "binary_search":
-        # expects {"arr": [...], "target": x}
-        return {"steps": ve.simulate_binary_search(data["arr"], data["target"])}
-    elif alg == "factorial":
-        return {"steps": ve.simulate_factorial(int(data))}
-    elif alg == "stack":
-        # expects list of ops [{"action": "push", "value": 10}, ...]
-        return {"steps": ve.simulate_stack(data)}
-    elif alg == "queue":
-        return {"steps": ve.simulate_queue(data)}
-    elif alg == "dfs":
-        # expects {"adj": {"0": [1,2]}, "start": "0"}
-        return {"steps": ve.simulate_dfs(data["adj"], data["start"])}
-    elif alg == "bfs":
-        return {"steps": ve.simulate_bfs(data["adj"], data["start"])}
+    try:
+        steps = []
+        if alg == "bubble_sort":
+            steps = ve.simulate_bubble_sort(data)
+        elif alg == "insertion_sort":
+            steps = ve.simulate_insertion_sort(data)
+        elif alg == "binary_search":
+            steps = ve.simulate_binary_search(data["arr"], data["target"])
+        elif alg == "factorial":
+            val = int(data) if isinstance(data, (int, str)) and str(data).isdigit() else 5
+            steps = ve.simulate_factorial(val)
+        elif alg == "stack":
+            steps = ve.simulate_stack(data)
+        elif alg == "queue":
+            steps = ve.simulate_queue(data)
+        elif alg == "dfs":
+            steps = ve.simulate_dfs(data["adj"], data["start"])
+        elif alg == "bfs":
+            steps = ve.simulate_bfs(data["adj"], data["start"])
+        else:
+            return {"error": f"Algorithm '{alg}' not supported yet.", "steps": []}
+            
+        if not steps:
+            return {"error": "Simulator generated 0 steps for this code/input.", "steps": []}
+            
+        return {"steps": steps}
+    except Exception as e:
+        import traceback
+        return {"error": f"Execution Error: {str(e)}", "trace": traceback.format_exc(), "steps": []}
     
-    return {"error": f"Algorithm '{alg}' simulator not found"}
+    return {"error": "End of visualization block reached unexpectedly."}
 
 import os
 import uvicorn
