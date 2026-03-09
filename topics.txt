@@ -1,0 +1,106 @@
+Line 29: "Basic Programming": {
+Line 30: "Beginner": {
+Line 96: "Intermediate": {
+Line 171: "Advanced": {
+Line 243: "Stack": {
+Line 244: "Beginner": {
+Line 348: "Intermediate": {
+Line 510: "Advanced": {
+Line 688: "Queue": {
+Line 689: "Beginner": {
+Line 792: "Intermediate": {
+Line 949: "Advanced": {
+Line 1129: "Linear Search": {
+Line 1130: "Beginner": {
+Line 1250: "Intermediate": {
+Line 1393: "Advanced": {
+Line 1534: "Arrays": {
+Line 1535: "Beginner": {
+Line 1621: "Intermediate": {
+Line 1710: "Advanced": {
+Line 1811: "Strings": {
+Line 1812: "Beginner": {
+Line 1891: "Intermediate": {
+Line 1968: "Advanced": {
+Line 2065: "Linked Lists": {
+Line 2066: "Beginner": {
+Line 2148: "Intermediate": {
+Line 2234: "Advanced": {
+Line 2310: "Bubble Sort": {
+Line 2311: "Beginner": {
+Line 2446: "Intermediate": {
+Line 2595: "Advanced": {
+Line 2755: "Recursion": {
+Line 2756: "Beginner": {
+Line 2830: "Intermediate": {
+Line 2917: "Advanced": {
+Line 3021: "Backtracking": {
+Line 3022: "Beginner": {
+Line 3104: "Intermediate": {
+Line 3212: "Advanced": {
+Line 3336: "Trees": {
+Line 3337: "Beginner": {
+Line 3419: "Intermediate": {
+Line 3540: "Advanced": {
+Line 3655: "Binary Search Trees": {
+Line 3656: "Beginner": {
+Line 3740: "Intermediate": {
+Line 3847: "Advanced": {
+Line 3942: "Heap / Priority Queue": {
+Line 3943: "Beginner": {
+Line 4015: "Intermediate": {
+Line 4128: "Advanced": {
+Line 4232: "Hashing": {
+Line 4233: "Beginner": {
+Line 4306: "Intermediate": {
+Line 4403: "Advanced": {
+Line 4506: "Graphs": {
+Line 4507: "Beginner": {
+Line 4582: "Intermediate": {
+Line 4695: "Advanced": {
+Line 4801: "Greedy Algorithms": {
+Line 4802: "Beginner": {
+Line 4880: "Intermediate": {
+Line 4988: "Advanced": {
+Line 5093: "Dynamic Programming": {
+Line 5094: "Beginner": {
+Line 5181: "Intermediate": {
+Line 5289: "Advanced": {
+Line 5395: "Bit Manipulation": {
+Line 5396: "Beginner": {
+Line 5470: "Intermediate": {
+Line 5572: "Advanced": {
+Line 5671: "Tries": {
+Line 5672: "Beginner": {
+Line 5763: "Intermediate": {
+Line 5886: "Advanced": {
+Line 5985: "Segment Trees": {
+Line 5986: "Beginner": {
+Line 6071: "Intermediate": {
+Line 6172: "Advanced": {
+Line 6288: "Beginner": {
+Line 6364: "Intermediate": {
+Line 6468: "Advanced": {
+Line 6569: "Advanced Graph Algorithms": {
+Line 6570: "Beginner": {
+Line 6656: "Intermediate": {
+Line 6753: "Advanced": {
+Line 6860: "Binary Search": {
+Line 6861: "Beginner": {
+Line 7039: "Advanced": {
+Line 7133: "Selection Sort": {
+Line 7134: "Beginner": {
+Line 7209: "Intermediate": {
+Line 7306: "Advanced": {
+Line 7404: "Insertion Sort": {
+Line 7405: "Beginner": {
+Line 7478: "Intermediate": {
+Line 7586: "Advanced": {
+Line 7695: "Merge Sort": {
+Line 7696: "Beginner": {
+Line 7781: "Intermediate": {
+Line 7880: "Advanced": {
+Line 7988: "Quick Sort": {
+Line 7989: "Beginner": {
+Line 8068: "Intermediate": {
+Line 8176: "Advanced": {
