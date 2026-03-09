@@ -8416,6 +8416,57 @@ def parse_code_for_visualizer(algorithm: str, code: str, default_input: Any):
         arr = [int(n.strip()) for n in re.split(r'[\s,]+', m.group(2)) if n.strip().lstrip('-').isdigit()] if m else [1, 2, 3]
         return {"arr": arr, "action": action, "val": val, "pos": pos}
 
+    if algorithm == "greedy_algorithms":
+        amount = 55
+        m = re.search(r"(?:amount|val|n)\s*[:=]\s*(\d+)", code_clean, re.I)
+        if m: amount = int(m.group(1))
+        coins = [10, 5, 1]
+        cm = re.search(r"(\[|\{)\s*(-?\d+[\d\s,]*)[\]\}]", code_clean)
+        if cm: coins = [int(n.strip()) for n in re.split(r'[\s,]+', cm.group(2)) if n.strip().lstrip('-').isdigit()]
+        return {"amount": amount, "coins": coins}
+
+    if algorithm == "dynamic_programming":
+        m = re.search(r"\b(fib|fibonacci|dp)\s*\(\s*(\d+)\s*\)", code_clean, re.I)
+        n = int(m.group(2)) if m and int(m.group(2)) < 15 else 6
+        return n
+
+    if algorithm == "bit_manipulation":
+        op = "AND"
+        if "OR" in code_clean: op = "OR"
+        elif "XOR" in code_clean: op = "XOR"
+        elif "LSHIFT" in code_clean or "<<" in code_clean: op = "SHIFT"
+        
+        val = 15
+        m = re.search(r"(?:val|n|a)\s*[:=]\s*(\d+)", code_clean, re.I)
+        if m: val = int(m.group(1))
+        
+        mask = 1
+        mask_m = re.search(r"(?:mask|b|m)\s*[:=]\s*(\d+)", code_clean, re.I)
+        if mask_m: mask = int(mask_m.group(1))
+        
+        return {"val": val, "op": op, "mask": mask}
+
+    if algorithm == "tries":
+        m = re.findall(r'"([^"]*)"', code_clean)
+        words = m if m else ["code", "cool"]
+        return words
+
+    if algorithm == "segment_trees":
+        m = re.search(r"(\[|\{)\s*(-?\d+[\d\s,]*)[\]\}]", code_clean)
+        arr = [int(n.strip()) for n in re.split(r'[\s,]+', m.group(2)) if n.strip().lstrip('-').isdigit()] if m else [1, 2, 3, 4]
+        return arr
+
+    if algorithm == "disjoint_set_union":
+        n = 5
+        m = re.search(r"new\s+DSU\s*\(\s*(\d+)\s*\)", code_clean, re.I)
+        if m: n = int(m.group(1))
+        ops = []
+        u_m = re.finditer(r"\bunion\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)", code_clean, re.I)
+        for m in u_m: ops.append(("union", int(m.group(1)), int(m.group(2))))
+        f_m = re.finditer(r"\bfind\s*\(\s*(\d+)\s*\)", code_clean, re.I)
+        for m in f_m: ops.append(("find", int(m.group(1)), None))
+        return {"n": n, "ops": ops if ops else [("union", 0, 1)]}
+
     if algorithm == "factorial":
         m = re.search(r"\b(fact|factorial)\s*\(\s*(\d+)\s*\)", code_clean, re.I)
         if m: return int(m.group(2))
@@ -8459,6 +8510,18 @@ def visualize(req: VisualizeRequest):
             steps = ve.simulate_backtracking(data)
         elif alg == "linked_lists":
             steps = ve.simulate_linked_list(data["arr"], data["action"], data["val"], data["pos"])
+        elif alg == "greedy_algorithms":
+            steps = ve.simulate_greedy(data["amount"], data["coins"])
+        elif alg == "dynamic_programming":
+            steps = ve.simulate_dp(data)
+        elif alg == "bit_manipulation":
+            steps = ve.simulate_bit_manipulation(data["val"], data["op"], data["mask"])
+        elif alg == "tries":
+            steps = ve.simulate_trie(data)
+        elif alg == "segment_trees":
+            steps = ve.simulate_segment_tree(data)
+        elif alg == "disjoint_set_union":
+            steps = ve.simulate_dsu(data["n"], data["ops"])
         else:
             return {"error": f"Algorithm '{alg}' not supported yet.", "steps": []}
             

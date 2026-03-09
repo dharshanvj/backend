@@ -590,3 +590,139 @@ def simulate_linked_list(arr: List[int], action: str, val: int = None, pos: int 
                 "pointers": {"deleted_at": pos}, "explanation": f"Deleted value {old} at position {pos}"
             })
     return steps
+
+def simulate_greedy(amount: int, coins: List[int]):
+    steps = []
+    coins = sorted(coins, reverse=True)
+    res = []
+    curr = amount
+    
+    for c in coins:
+        count = curr // c
+        steps.append({
+            "line": 4, "variables": {"coin": c, "left": curr, "taken": count},
+            "array": list(res), "pointers": {},
+            "explanation": f"Checking coin {c}. We can take {count} coins."
+        })
+        if count > 0:
+            for _ in range(count):
+                res.append(c)
+                curr -= c
+                steps.append({
+                    "line": 8, "variables": {"amountLeft": curr},
+                    "array": list(res), "pointers": {},
+                    "explanation": f"Added {c} to result. Remaining: {curr}"
+                })
+    steps.append({ "line": 15, "array": list(res), "explanation": "Greedy selection complete!" })
+    return steps
+
+def simulate_dp(n: int):
+    # Simulate Fibonacci with memoization
+    steps = []
+    memo = [0] * (n + 1)
+    
+    def fib(i):
+        if i <= 1: 
+            memo[i] = i
+            steps.append({ "line": 2, "variables": {"n": i, "val": i}, "array": list(memo), "explanation": f"Base case: fib({i}) = {i}" })
+            return i
+        
+        steps.append({ "line": 4, "variables": {"n": i}, "array": list(memo), "explanation": f"Calculating fib({i})..." })
+        res = fib(i-1) + fib(i-2)
+        memo[i] = res
+        steps.append({ "line": 8, "variables": {"n": i, "result": res}, "array": list(memo), "pointers": {"filled": i}, "explanation": f"fib({i}) stored as {res}" })
+        return res
+
+    fib(n)
+    return steps
+
+def simulate_bit_manipulation(val: int, op: str, mask: int = 1):
+    steps = []
+    binary = bin(val)[2:].zfill(8)
+    res_val = val
+    if op == "AND": res_val = val & mask
+    elif op == "OR": res_val = val | mask
+    elif op == "XOR": res_val = val ^ mask
+    elif op == "SHIFT": res_val = val << mask
+    
+    res_bin = bin(res_val)[2:].zfill(8)
+    
+    steps.append({
+        "line": 2, "variables": {"op": op, "val": val, "mask": mask},
+        "array": list(binary), "explanation": f"Input bits: {binary}"
+    })
+    steps.append({
+        "line": 10, "variables": {"result": res_val},
+        "array": list(res_bin), "explanation": f"Resulting bits: {res_bin} (Value: {res_val})"
+    })
+    return steps
+
+def simulate_trie(words: List[str]):
+    steps = []
+    # Simplified trie: show levels and current path
+    trie = {"#": "ROOT"}
+    
+    for word in words:
+        curr = trie
+        for char in word:
+            if char not in curr: curr[char] = {}
+            curr = curr[char]
+            steps.append({
+                "line": 5, "variables": {"word": word, "char": char},
+                "array": list(word), "pointers": {"at": word.find(char)},
+                "explanation": f"Inserting '{char}' into the prefix path of '{word}'"
+            })
+    steps.append({ "line": 15, "explanation": "Trie insertion complete!" })
+    return steps
+
+def simulate_segment_tree(arr: List[int]):
+    steps = []
+    n = len(arr)
+    tree = [0] * (2 * n)
+    
+    # Build
+    for i in range(n):
+        tree[n + i] = arr[i]
+        steps.append({
+            "line": 3, "variables": {"i": i, "val": arr[i]},
+            "array": list(tree), "pointers": {"leaf": n + i},
+            "explanation": f"Placing {arr[i]} at leaf index {n+i}"
+        })
+    
+    for i in range(n - 1, 0, -1):
+        tree[i] = tree[2*i] + tree[2*i + 1]
+        steps.append({
+            "line": 8, "variables": {"parent": i, "left": tree[2*i], "right": tree[2*i+1]},
+            "array": list(tree), "pointers": {"parent": i, "l": 2*i, "r": 2*i+1},
+            "explanation": f"Parent {i} = left({tree[2*i]}) + right({tree[2*i+1]}) = {tree[i]}"
+        })
+    return steps
+
+def simulate_dsu(n: int, ops: List[tuple]):
+    steps = []
+    parent = list(range(n))
+    
+    def find(i):
+        if parent[i] == i: return i
+        return find(parent[i])
+        
+    for op_type, u, v in ops:
+        if op_type == "union":
+            root_u = find(u)
+            root_v = find(v)
+            if root_u != root_v:
+                parent[root_u] = root_v
+                steps.append({
+                    "line": 5, "variables": {"u": u, "v": v, "rootU": root_u, "rootV": root_v},
+                    "array": list(parent), "pointers": {"u": u, "v": v},
+                    "explanation": f"Connecting component of {u} to component of {v}"
+                })
+        else: # find
+            root = find(u)
+            steps.append({
+                "line": 10, "variables": {"node": u, "root": root},
+                "array": list(parent), "pointers": {"active": u},
+                "explanation": f"Finding root of {u}: Result {root}"
+            })
+    return steps
+
