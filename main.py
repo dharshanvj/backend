@@ -7095,7 +7095,7 @@ public class IntermediateBinarySearch {
                 "★ Use 100-iteration loop for floating-point binary search to avoid epsilon bugs."
             ),
             "java": """\
-public class AdvancedBinarySearch {
+public class BinarySearch {
 
     // Median of Two Sorted Arrays O(log min(m,n))
     static double findMedianSortedArrays(int[] A, int[] B) {
@@ -7268,7 +7268,7 @@ public class SelectionSortDemo {
                 "★ Selection Sort is preferred over Bubble Sort for fewer writes."
             ),
             "java": """\
-public class IntermediateSelectionSort {
+public class SelectionSort {
 
     // Standard Selection Sort
     static void selectionSort(int[] arr) {
@@ -8359,6 +8359,63 @@ def parse_code_for_visualizer(algorithm: str, code: str, default_input: Any):
                 return nums
         return default_input
 
+    if algorithm == "arrays":
+        ops = []
+        # Support arr[idx] = val, arr.get(idx), search(val)
+        upd = re.finditer(r"\[\s*(\d+)\s*\]\s*=\s*(-?\d+)", code_clean)
+        for m in upd: ops.append({"action": "update", "index": int(m.group(1)), "value": int(m.group(2))})
+        acc = re.finditer(r"\[\s*(\d+)\s*\](?!\s*=)", code_clean)
+        for m in acc: ops.append({"action": "access", "index": int(m.group(1))})
+        src = re.search(r"\bsearch\s*\(\s*(-?\d+)\s*\)", code_clean, re.I)
+        if src: ops.append({"action": "search", "value": int(src.group(1))})
+        
+        arr_m = re.search(r"(\[|\{)\s*(-?\d+[\d\s,]*)[\]\}]", code_clean)
+        initial_arr = [int(n.strip()) for n in re.split(r'[\s,]+', arr_m.group(2)) if n.strip().lstrip('-').isdigit()] if arr_m else [1,2,3,4,5]
+        return {"arr": initial_arr, "ops": ops if ops else [{"action":"access", "index":0}]}
+
+    if algorithm == "strings":
+        action = "reverse"
+        if "palindrome" in code_clean.lower(): action = "palindrome"
+        m = re.search(r'"([^"]*)"', code_clean)
+        s = m.group(1) if m else "radar"
+        return {"s": s, "action": action}
+
+    if algorithm == "hashing":
+        m = re.findall(r"\d+", code_clean)
+        keys = [int(x) for x in m if len(x) < 5][:10] if m else [10, 20, 30]
+        return {"keys": keys, "size": 7}
+
+    if algorithm == "heap":
+        action = "extract"
+        val = None
+        if "insert" in code_clean.lower() or "add" in code_clean.lower():
+            action = "insert"
+            m = re.search(r"(?:insert|add)\s*\(\s*(\d+)\s*\)", code_clean, re.I)
+            val = int(m.group(1)) if m else 50
+        m = re.search(r"(\[|\{)\s*(-?\d+[\d\s,]*)[\]\}]", code_clean)
+        arr = [int(n.strip()) for n in re.split(r'[\s,]+', m.group(2)) if n.strip().lstrip('-').isdigit()] if m else [10, 20, 30]
+        return {"arr": arr, "action": action, "val": val}
+
+    if algorithm == "backtracking":
+        m = re.search(r"(\d+)", code_clean)
+        n = int(m.group(1)) if m and int(m.group(1)) < 10 else 4
+        return n
+
+    if algorithm == "linked_lists":
+        action = "insert"
+        val, pos = 10, 0
+        if "delete" in code_clean.lower() or "remove" in code_clean.lower():
+            action = "delete"
+            m = re.search(r"(?:delete|remove)\s*\(\s*(\d+)\s*\)", code_clean, re.I)
+            pos = int(m.group(1)) if m else 0
+        else:
+            m = re.search(r"(?:insert|add)\s*\(\s*(\d+)\s*,\s*(\d+)\s*\)", code_clean, re.I)
+            if m: val, pos = int(m.group(1)), int(m.group(2))
+        
+        m = re.search(r"(\[|\{)\s*(-?\d+[\d\s,]*)[\]\}]", code_clean)
+        arr = [int(n.strip()) for n in re.split(r'[\s,]+', m.group(2)) if n.strip().lstrip('-').isdigit()] if m else [1, 2, 3]
+        return {"arr": arr, "action": action, "val": val, "pos": pos}
+
     if algorithm == "factorial":
         m = re.search(r"\b(fact|factorial)\s*\(\s*(\d+)\s*\)", code_clean, re.I)
         if m: return int(m.group(2))
@@ -8390,6 +8447,18 @@ def visualize(req: VisualizeRequest):
             steps = ve.simulate_dfs(data["adj"], data["start"])
         elif alg == "bfs":
             steps = ve.simulate_bfs(data["adj"], data["start"])
+        elif alg == "arrays":
+            steps = ve.simulate_arrays(data["arr"], data["ops"])
+        elif alg == "strings":
+            steps = ve.simulate_strings(data["s"], data["action"])
+        elif alg == "hashing":
+            steps = ve.simulate_hashing(data["keys"], data["size"])
+        elif alg == "heap":
+            steps = ve.simulate_heap(data["arr"], data["action"], data["val"])
+        elif alg == "backtracking":
+            steps = ve.simulate_backtracking(data)
+        elif alg == "linked_lists":
+            steps = ve.simulate_linked_list(data["arr"], data["action"], data["val"], data["pos"])
         else:
             return {"error": f"Algorithm '{alg}' not supported yet.", "steps": []}
             
